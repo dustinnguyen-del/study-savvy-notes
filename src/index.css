@@ -8,7 +8,7 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 210 40% 98%;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -17,16 +17,16 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 225 73% 57%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 210 40% 96.1%;
+    --muted: 210 40% 94%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
+    --accent: 262 64% 85%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
@@ -34,7 +34,24 @@ All colors MUST be HSL.
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 225 73% 57%;
+
+    /* Academic themed colors */
+    --academic-primary: 225 73% 57%;
+    --academic-secondary: 262 64% 85%;
+    --academic-accent: 198 93% 60%;
+    --academic-muted: 210 40% 94%;
+    --academic-dark: 225 39% 21%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(225 73% 57%), hsl(262 64% 85%));
+    --gradient-hero: linear-gradient(135deg, hsl(225 73% 57%) 0%, hsl(262 64% 75%) 50%, hsl(198 93% 60%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 40% 98%));
+    
+    /* Shadows */
+    --shadow-card: 0 2px 8px -2px hsl(225 73% 57% / 0.1);
+    --shadow-hover: 0 4px 12px -4px hsl(225 73% 57% / 0.15);
+    --shadow-focus: 0 0 0 2px hsl(225 73% 57% / 0.2);
 
     --radius: 0.5rem;
 
