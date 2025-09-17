@@ -75,7 +75,10 @@ export const Sidebar = ({ currentView, setCurrentView, selectedFolder, setSelect
         {viewButtons.map(({ id, label, icon: Icon }) => (
           <Button
             key={id}
-            onClick={() => setCurrentView(id)}
+            onClick={() => {
+              console.log('Button clicked:', id);
+              setCurrentView(id);
+            }}
             variant={currentView === id ? "default" : "ghost"}
             className="w-full justify-start"
           >

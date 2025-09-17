@@ -10,6 +10,8 @@ const Dashboard = () => {
   const [currentView, setCurrentView] = useState<ViewType>("notes");
   const [selectedFolder, setSelectedFolder] = useState<string>("general");
 
+  console.log('Dashboard rendering with currentView:', currentView);
+
   const renderContent = () => {
     switch (currentView) {
       case "notes":
