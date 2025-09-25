@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Search, FileText, Calendar } from "lucide-react";
+import { Plus, Search, FileText, Calendar, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -78,6 +78,15 @@ export const NoteEditor = ({ selectedFolder }: NoteEditorProps) => {
     }
   };
 
+  const handleDeleteNote = (noteId: string) => {
+    setNotes(notes.filter(note => note.id !== noteId));
+    if (selectedNote?.id === noteId) {
+      setSelectedNote(null);
+      setEditTitle("");
+      setEditContent("");
+    }
+  };
+
   const filteredNotes = notes.filter(note =>
     note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     note.content.toLowerCase().includes(searchTerm.toLowerCase())
@@ -111,7 +120,7 @@ export const NoteEditor = ({ selectedFolder }: NoteEditorProps) => {
             {filteredNotes.map((note) => (
               <Card
                 key={note.id}
-                className={`mb-2 cursor-pointer transition-colors ${
+                className={`mb-2 cursor-pointer transition-colors group ${
                   selectedNote?.id === note.id
                     ? "border-academic-primary bg-academic-primary/5"
                     : "hover:bg-muted/50"
@@ -123,7 +132,20 @@ export const NoteEditor = ({ selectedFolder }: NoteEditorProps) => {
                 }}
               >
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm truncate">{note.title}</CardTitle>
+                  <div className="flex items-start justify-between">
+                    <CardTitle className="text-sm truncate flex-1">{note.title}</CardTitle>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteNote(note.id);
+                      }}
+                      size="sm"
+                      variant="ghost"
+                      className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
                   <CardDescription className="text-xs flex items-center gap-1">
                     <Calendar className="h-3 w-3" />
                     {note.updatedAt}

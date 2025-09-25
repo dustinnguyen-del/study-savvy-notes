@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BookOpen, FolderPlus, Brain, Plus, Edit2, Check, X } from "lucide-react";
+import { BookOpen, FolderPlus, Brain, Plus, Edit2, Check, X, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -55,6 +55,15 @@ export const Sidebar = ({ currentView, setCurrentView, selectedFolder, setSelect
     setEditValue("");
   };
 
+  const handleDeleteFolder = (folderId: string) => {
+    if (folders.length > 1) { // Prevent deleting the last folder
+      setFolders(folders.filter(folder => folder.id !== folderId));
+      if (selectedFolder === folderId) {
+        setSelectedFolder(folders.find(f => f.id !== folderId)?.id || "general");
+      }
+    }
+  };
+
   const viewButtons = [
     { id: "notes" as ViewType, label: "Notes", icon: BookOpen },
     { id: "flashcards" as ViewType, label: "Flashcards", icon: FolderPlus },
@@ -75,10 +84,7 @@ export const Sidebar = ({ currentView, setCurrentView, selectedFolder, setSelect
         {viewButtons.map(({ id, label, icon: Icon }) => (
           <Button
             key={id}
-            onClick={() => {
-              console.log('Button clicked:', id);
-              setCurrentView(id);
-            }}
+            onClick={() => setCurrentView(id)}
             variant={currentView === id ? "default" : "ghost"}
             className="w-full justify-start"
           >
@@ -156,10 +162,23 @@ export const Sidebar = ({ currentView, setCurrentView, selectedFolder, setSelect
                       }}
                       size="sm"
                       variant="ghost"
-                      className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100"
+                      className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 mr-1"
                     >
                       <Edit2 className="h-3 w-3" />
                     </Button>
+                    {folders.length > 1 && (
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteFolder(folder.id);
+                        }}
+                        size="sm"
+                        variant="ghost"
+                        className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    )}
                   </>
                 )}
               </div>

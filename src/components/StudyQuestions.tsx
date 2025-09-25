@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Brain, RefreshCw, CheckCircle, XCircle, Lightbulb } from "lucide-react";
+import { Brain, RefreshCw, CheckCircle, XCircle, Lightbulb, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
+import { QuestionCreator } from "./QuestionCreator";
 
 interface Question {
   id: string;
@@ -20,7 +21,7 @@ interface StudyQuestionsProps {
 }
 
 export const StudyQuestions = ({ selectedFolder }: StudyQuestionsProps) => {
-  const [questions] = useState<Question[]>([
+  const [questions, setQuestions] = useState<Question[]>([
     {
       id: "1",
       question: "What is the limit of (sin x)/x as x approaches 0?",
@@ -52,6 +53,7 @@ export const StudyQuestions = ({ selectedFolder }: StudyQuestionsProps) => {
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<number>>(new Set());
+  const [showCreator, setShowCreator] = useState(false);
 
   const currentQuestion = questions[currentQuestionIndex];
   
@@ -86,15 +88,39 @@ export const StudyQuestions = ({ selectedFolder }: StudyQuestionsProps) => {
   };
 
   const handleGenerateQuestions = () => {
-    // Placeholder for AI question generation
-    alert("AI question generation would integrate with your notes here!");
+    const newQuestion: Question = {
+      id: Date.now().toString(),
+      question: "Sample question generated from your notes",
+      options: ["Option A", "Option B", "Option C", "Option D"],
+      correctAnswer: 0,
+      explanation: "This is a sample explanation for the generated question.",
+      difficulty: "medium"
+    };
+    
+    setQuestions([...questions, newQuestion]);
   };
+
+  const handleCreateQuestion = (newQuestion: Question) => {
+    setQuestions([...questions, newQuestion]);
+    setShowCreator(false);
+  };
+
+  if (showCreator) {
+    return (
+      <div className="flex flex-col h-full bg-gradient-to-br from-academic-primary/5 to-academic-accent/5 p-6">
+        <QuestionCreator
+          onSave={handleCreateQuestion}
+          onCancel={() => setShowCreator(false)}
+        />
+      </div>
+    );
+  }
 
   const progressPercentage = ((currentQuestionIndex + 1) / questions.length) * 100;
   const difficultyColor = {
-    easy: "text-green-600",
-    medium: "text-yellow-600", 
-    hard: "text-red-600"
+    easy: "text-academic-accent",
+    medium: "text-academic-primary", 
+    hard: "text-destructive"
   };
 
   return (
@@ -106,10 +132,16 @@ export const StudyQuestions = ({ selectedFolder }: StudyQuestionsProps) => {
             <h2 className="text-2xl font-bold text-academic-primary">Study Questions</h2>
             <p className="text-muted-foreground">Test your knowledge and identify areas for improvement</p>
           </div>
-          <Button onClick={handleGenerateQuestions} variant="outline">
-            <Brain className="mr-2 h-4 w-4" />
-            Generate from Notes
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={() => setShowCreator(true)} variant="outline">
+              <Plus className="mr-2 h-4 w-4" />
+              Create Question
+            </Button>
+            <Button onClick={handleGenerateQuestions} variant="outline">
+              <Brain className="mr-2 h-4 w-4" />
+              Generate from Notes
+            </Button>
+          </div>
         </div>
         
         <div className="mt-4 space-y-2">
@@ -151,9 +183,9 @@ export const StudyQuestions = ({ selectedFolder }: StudyQuestionsProps) => {
                       id={`option-${index}`}
                       className={showResult ? (
                         index === currentQuestion.correctAnswer 
-                          ? "border-green-500 text-green-500" 
+                          ? "border-academic-accent text-academic-accent" 
                           : index === parseInt(selectedAnswer) 
-                            ? "border-red-500 text-red-500" 
+                            ? "border-destructive text-destructive" 
                             : ""
                       ) : ""}
                     />
@@ -162,19 +194,19 @@ export const StudyQuestions = ({ selectedFolder }: StudyQuestionsProps) => {
                       className={`flex-1 cursor-pointer p-2 rounded ${
                         showResult ? (
                           index === currentQuestion.correctAnswer 
-                            ? "bg-green-50 text-green-800" 
+                            ? "bg-academic-accent/10 text-academic-accent border border-academic-accent/20" 
                             : index === parseInt(selectedAnswer) 
-                              ? "bg-red-50 text-red-800" 
+                              ? "bg-destructive/10 text-destructive border border-destructive/20" 
                               : ""
                         ) : "hover:bg-muted"
                       }`}
                     >
                       {option}
                       {showResult && index === currentQuestion.correctAnswer && (
-                        <CheckCircle className="inline ml-2 h-4 w-4 text-green-600" />
+                        <CheckCircle className="inline ml-2 h-4 w-4 text-academic-accent" />
                       )}
                       {showResult && index === parseInt(selectedAnswer) && index !== currentQuestion.correctAnswer && (
-                        <XCircle className="inline ml-2 h-4 w-4 text-red-600" />
+                        <XCircle className="inline ml-2 h-4 w-4 text-destructive" />
                       )}
                     </Label>
                   </div>

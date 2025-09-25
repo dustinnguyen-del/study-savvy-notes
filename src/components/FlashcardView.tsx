@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, RotateCcw, Check, X, Edit } from "lucide-react";
+import { Plus, RotateCcw, Check, X, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -61,6 +61,13 @@ export const FlashcardView = ({ selectedFolder }: FlashcardViewProps) => {
         : card
     ));
     setEditingCard(null);
+  };
+
+  const handleDeleteCard = (cardId: string) => {
+    setFlashcards(flashcards.filter(card => card.id !== cardId));
+    if (editingCard === cardId) {
+      setEditingCard(null);
+    }
   };
 
   const handleStartStudy = () => {
@@ -166,22 +173,32 @@ export const FlashcardView = ({ selectedFolder }: FlashcardViewProps) => {
         <ScrollArea className="h-[calc(100vh-120px)]">
           <div className="p-2">
             {flashcards.map((card) => (
-              <Card key={card.id} className="mb-2 hover:bg-muted/50 transition-colors">
+              <Card key={card.id} className="mb-2 hover:bg-muted/50 transition-colors group">
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between">
-                    <CardTitle className="text-sm line-clamp-2">{card.question || "New Flashcard"}</CardTitle>
-                    <Button
-                      onClick={() => {
-                        setEditingCard(card.id);
-                        setNewQuestion(card.question);
-                        setNewAnswer(card.answer);
-                      }}
-                      size="sm"
-                      variant="ghost"
-                      className="h-6 w-6 p-0"
-                    >
-                      <Edit className="h-3 w-3" />
-                    </Button>
+                    <CardTitle className="text-sm line-clamp-2 flex-1">{card.question || "New Flashcard"}</CardTitle>
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100">
+                      <Button
+                        onClick={() => {
+                          setEditingCard(card.id);
+                          setNewQuestion(card.question);
+                          setNewAnswer(card.answer);
+                        }}
+                        size="sm"
+                        variant="ghost"
+                        className="h-6 w-6 p-0"
+                      >
+                        <Edit className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        onClick={() => handleDeleteCard(card.id)}
+                        size="sm"
+                        variant="ghost"
+                        className="h-6 w-6 p-0 text-destructive hover:text-destructive"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent className="pt-0">
