@@ -54,6 +54,10 @@ export default {
           muted: "hsl(var(--academic-muted))",
           dark: "hsl(var(--academic-dark))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

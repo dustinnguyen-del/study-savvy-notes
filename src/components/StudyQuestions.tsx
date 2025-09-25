@@ -183,7 +183,7 @@ export const StudyQuestions = ({ selectedFolder }: StudyQuestionsProps) => {
                       id={`option-${index}`}
                       className={showResult ? (
                         index === currentQuestion.correctAnswer 
-                          ? "border-academic-accent text-academic-accent" 
+                          ? "border-success text-success" 
                           : index === parseInt(selectedAnswer) 
                             ? "border-destructive text-destructive" 
                             : ""
@@ -194,7 +194,7 @@ export const StudyQuestions = ({ selectedFolder }: StudyQuestionsProps) => {
                       className={`flex-1 cursor-pointer p-2 rounded ${
                         showResult ? (
                           index === currentQuestion.correctAnswer 
-                            ? "bg-academic-accent/10 text-academic-accent border border-academic-accent/20" 
+                            ? "bg-success/10 text-success border border-success/20" 
                             : index === parseInt(selectedAnswer) 
                               ? "bg-destructive/10 text-destructive border border-destructive/20" 
                               : ""
@@ -203,7 +203,7 @@ export const StudyQuestions = ({ selectedFolder }: StudyQuestionsProps) => {
                     >
                       {option}
                       {showResult && index === currentQuestion.correctAnswer && (
-                        <CheckCircle className="inline ml-2 h-4 w-4 text-academic-accent" />
+                        <CheckCircle className="inline ml-2 h-4 w-4 text-success" />
                       )}
                       {showResult && index === parseInt(selectedAnswer) && index !== currentQuestion.correctAnswer && (
                         <XCircle className="inline ml-2 h-4 w-4 text-destructive" />
