@@ -16,9 +16,10 @@ interface Note {
 
 interface NoteEditorProps {
   selectedFolder: string;
+  onStatsUpdate?: (stats: { noteCount: number }) => void;
 }
 
-export const NoteEditor = ({ selectedFolder }: NoteEditorProps) => {
+export const NoteEditor = ({ selectedFolder, onStatsUpdate }: NoteEditorProps) => {
   const [notes, setNotes] = useState<Note[]>([
     {
       id: "1",
@@ -50,10 +51,12 @@ export const NoteEditor = ({ selectedFolder }: NoteEditorProps) => {
       updatedAt: new Date().toISOString().split('T')[0]
     };
     
-    setNotes([newNote, ...notes]);
+    const updatedNotes = [newNote, ...notes];
+    setNotes(updatedNotes);
     setSelectedNote(newNote);
     setEditTitle(newNote.title);
     setEditContent(newNote.content);
+    onStatsUpdate?.({ noteCount: updatedNotes.length });
   };
 
   const handleSaveNote = () => {
@@ -79,12 +82,14 @@ export const NoteEditor = ({ selectedFolder }: NoteEditorProps) => {
   };
 
   const handleDeleteNote = (noteId: string) => {
-    setNotes(notes.filter(note => note.id !== noteId));
+    const updatedNotes = notes.filter(note => note.id !== noteId);
+    setNotes(updatedNotes);
     if (selectedNote?.id === noteId) {
       setSelectedNote(null);
       setEditTitle("");
       setEditContent("");
     }
+    onStatsUpdate?.({ noteCount: updatedNotes.length });
   };
 
   const filteredNotes = notes.filter(note =>

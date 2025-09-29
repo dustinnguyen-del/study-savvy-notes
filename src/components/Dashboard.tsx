@@ -3,23 +3,37 @@ import { Sidebar } from "./Sidebar";
 import { NoteEditor } from "./NoteEditor";
 import { FlashcardView } from "./FlashcardView";
 import { StudyQuestions } from "./StudyQuestions";
+import { StatsDashboard } from "./StatsDashboard";
 
-export type ViewType = "notes" | "flashcards" | "study";
+export type ViewType = "dashboard" | "notes" | "flashcards" | "study";
 
 const Dashboard = () => {
-  const [currentView, setCurrentView] = useState<ViewType>("notes");
+  const [currentView, setCurrentView] = useState<ViewType>("dashboard");
   const [selectedFolder, setSelectedFolder] = useState<string>("general");
+  const [stats, setStats] = useState({
+    noteCount: 2,
+    flashcardCount: 2,
+    questionsAnswered: 0,
+    correctAnswers: 0,
+    studyStreak: 3,
+  });
+
+  const updateStats = (updates: Partial<typeof stats>) => {
+    setStats(prev => ({ ...prev, ...updates }));
+  };
 
   const renderContent = () => {
     switch (currentView) {
+      case "dashboard":
+        return <StatsDashboard {...stats} />;
       case "notes":
-        return <NoteEditor selectedFolder={selectedFolder} />;
+        return <NoteEditor selectedFolder={selectedFolder} onStatsUpdate={updateStats} />;
       case "flashcards":
-        return <FlashcardView selectedFolder={selectedFolder} />;
+        return <FlashcardView selectedFolder={selectedFolder} onStatsUpdate={updateStats} />;
       case "study":
-        return <StudyQuestions selectedFolder={selectedFolder} />;
+        return <StudyQuestions selectedFolder={selectedFolder} onStatsUpdate={updateStats} />;
       default:
-        return <NoteEditor selectedFolder={selectedFolder} />;
+        return <StatsDashboard {...stats} />;
     }
   };
 

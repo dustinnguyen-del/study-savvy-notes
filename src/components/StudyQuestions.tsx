@@ -18,9 +18,10 @@ interface Question {
 
 interface StudyQuestionsProps {
   selectedFolder: string;
+  onStatsUpdate?: (stats: { questionsAnswered: number; correctAnswers: number }) => void;
 }
 
-export const StudyQuestions = ({ selectedFolder }: StudyQuestionsProps) => {
+export const StudyQuestions = ({ selectedFolder, onStatsUpdate }: StudyQuestionsProps) => {
   const [questions, setQuestions] = useState<Question[]>([
     {
       id: "1",
@@ -63,12 +64,20 @@ export const StudyQuestions = ({ selectedFolder }: StudyQuestionsProps) => {
     const answerIndex = parseInt(selectedAnswer);
     const isCorrect = answerIndex === currentQuestion.correctAnswer;
     
+    let newScore = score;
     if (isCorrect && !answeredQuestions.has(currentQuestionIndex)) {
-      setScore(score + 1);
+      newScore = score + 1;
+      setScore(newScore);
     }
     
-    setAnsweredQuestions(new Set(answeredQuestions).add(currentQuestionIndex));
+    const newAnswered = new Set(answeredQuestions).add(currentQuestionIndex);
+    setAnsweredQuestions(newAnswered);
     setShowResult(true);
+    
+    onStatsUpdate?.({ 
+      questionsAnswered: newAnswered.size, 
+      correctAnswers: newScore 
+    });
   };
 
   const handleNextQuestion = () => {

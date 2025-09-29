@@ -15,9 +15,10 @@ interface Flashcard {
 
 interface FlashcardViewProps {
   selectedFolder: string;
+  onStatsUpdate?: (stats: { flashcardCount: number }) => void;
 }
 
-export const FlashcardView = ({ selectedFolder }: FlashcardViewProps) => {
+export const FlashcardView = ({ selectedFolder, onStatsUpdate }: FlashcardViewProps) => {
   const [flashcards, setFlashcards] = useState<Flashcard[]>([
     {
       id: "1",
@@ -48,10 +49,12 @@ export const FlashcardView = ({ selectedFolder }: FlashcardViewProps) => {
       createdAt: new Date().toISOString().split('T')[0]
     };
     
-    setFlashcards([newCard, ...flashcards]);
+    const updatedCards = [newCard, ...flashcards];
+    setFlashcards(updatedCards);
     setEditingCard(newCard.id);
     setNewQuestion("");
     setNewAnswer("");
+    onStatsUpdate?.({ flashcardCount: updatedCards.length });
   };
 
   const handleSaveCard = (cardId: string) => {
@@ -64,10 +67,12 @@ export const FlashcardView = ({ selectedFolder }: FlashcardViewProps) => {
   };
 
   const handleDeleteCard = (cardId: string) => {
-    setFlashcards(flashcards.filter(card => card.id !== cardId));
+    const updatedCards = flashcards.filter(card => card.id !== cardId);
+    setFlashcards(updatedCards);
     if (editingCard === cardId) {
       setEditingCard(null);
     }
+    onStatsUpdate?.({ flashcardCount: updatedCards.length });
   };
 
   const handleStartStudy = () => {
@@ -108,7 +113,7 @@ export const FlashcardView = ({ selectedFolder }: FlashcardViewProps) => {
         </div>
 
         <div className="flex-1 flex items-center justify-center p-8">
-          <Card className="w-full max-w-2xl h-80 cursor-pointer transition-all duration-300 hover:shadow-lg">
+          <Card className="w-full max-w-2xl h-80 cursor-pointer transition-all duration-500 hover:shadow-[0_0_30px_rgba(99,102,241,0.2)] hover:scale-105 transform">
             <CardContent className="h-full flex items-center justify-center p-8">
               <div className="text-center w-full">
                 {!showAnswer ? (

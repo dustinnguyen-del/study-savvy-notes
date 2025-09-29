@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BookOpen, FolderPlus, Brain, Plus, Edit2, Check, X, Trash2 } from "lucide-react";
+import { BookOpen, FolderPlus, Brain, Plus, Edit2, Check, X, Trash2, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -65,6 +65,7 @@ export const Sidebar = ({ currentView, setCurrentView, selectedFolder, setSelect
   };
 
   const viewButtons = [
+    { id: "dashboard" as ViewType, label: "Dashboard", icon: LayoutDashboard },
     { id: "notes" as ViewType, label: "Notes", icon: BookOpen },
     { id: "flashcards" as ViewType, label: "Flashcards", icon: FolderPlus },
     { id: "study" as ViewType, label: "Study", icon: Brain },
