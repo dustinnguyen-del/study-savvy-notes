@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import notesHero from "@/assets/notes-hero.jpg";
 
 interface Note {
   id: string;
@@ -98,9 +99,28 @@ export const NoteEditor = ({ selectedFolder, onStatsUpdate }: NoteEditorProps) =
   );
 
   return (
-    <div className="flex h-full">
-      {/* Notes List */}
-      <div className="w-80 border-r border-border bg-background">
+    <div className="flex flex-col h-full">
+      {/* Hero Banner */}
+      <div className="relative h-48 overflow-hidden">
+        <img 
+          src={notesHero} 
+          alt="Note-taking workspace with notebook and laptop" 
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-academic-primary/80 to-academic-accent/60 flex items-center">
+          <div className="px-6 space-y-1">
+            <h2 className="text-3xl font-bold text-white">
+              My Notes
+            </h2>
+            <p className="text-white/90">Organize your thoughts and learning materials</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Notes List */}
+        <div className="w-80 border-r border-border bg-background">
         <div className="p-4 border-b border-border">
           <div className="flex items-center gap-2 mb-4">
             <Button onClick={handleCreateNote} size="sm" className="flex-1">
@@ -204,6 +224,7 @@ export const NoteEditor = ({ selectedFolder, onStatsUpdate }: NoteEditorProps) =
             </div>
           </div>
         )}
+      </div>
       </div>
     </div>
   );

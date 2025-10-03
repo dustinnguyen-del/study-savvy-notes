@@ -6,6 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { QuestionCreator } from "./QuestionCreator";
+import studyQuestionsHero from "@/assets/study-questions-hero.jpg";
 
 interface Question {
   id: string;
@@ -133,14 +134,27 @@ export const StudyQuestions = ({ selectedFolder, onStatsUpdate }: StudyQuestions
   };
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-br from-academic-primary/5 to-academic-accent/5">
+    <div className="flex flex-col h-full">
+      {/* Hero Banner */}
+      <div className="relative h-48 overflow-hidden">
+        <img 
+          src={studyQuestionsHero} 
+          alt="Quiz paper with multiple choice questions" 
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-academic-primary/80 to-academic-accent/60 flex items-center">
+          <div className="px-6 space-y-1">
+            <h2 className="text-3xl font-bold text-white">
+              Study Questions
+            </h2>
+            <p className="text-white/90">Test your knowledge and track your progress</p>
+          </div>
+        </div>
+      </div>
+
       {/* Header */}
       <div className="p-6 border-b border-border bg-background/80 backdrop-blur-sm">
         <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold text-academic-primary">Study Questions</h2>
-            <p className="text-muted-foreground">Test your knowledge and identify areas for improvement</p>
-          </div>
           <div className="flex gap-2">
             <Button onClick={() => setShowCreator(true)} variant="outline">
               <Plus className="mr-2 h-4 w-4" />

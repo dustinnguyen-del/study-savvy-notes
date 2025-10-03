@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import flashcardsHero from "@/assets/flashcards-hero.jpg";
 
 interface Flashcard {
   id: string;
@@ -155,9 +156,28 @@ export const FlashcardView = ({ selectedFolder, onStatsUpdate }: FlashcardViewPr
   }
 
   return (
-    <div className="flex h-full">
-      {/* Flashcard List */}
-      <div className="w-80 border-r border-border bg-background">
+    <div className="flex flex-col h-full">
+      {/* Hero Banner */}
+      <div className="relative h-48 overflow-hidden">
+        <img 
+          src={flashcardsHero} 
+          alt="Colorful flashcards on study desk" 
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-academic-primary/80 to-academic-accent/60 flex items-center">
+          <div className="px-6 space-y-1">
+            <h2 className="text-3xl font-bold text-white">
+              Flashcards
+            </h2>
+            <p className="text-white/90">Master concepts through active recall</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Flashcard List */}
+        <div className="w-80 border-r border-border bg-background">
         <div className="p-4 border-b border-border">
           <div className="flex gap-2 mb-4">
             <Button onClick={handleCreateFlashcard} size="sm" className="flex-1">
@@ -271,6 +291,7 @@ export const FlashcardView = ({ selectedFolder, onStatsUpdate }: FlashcardViewPr
             </div>
           </div>
         )}
+      </div>
       </div>
     </div>
   );
