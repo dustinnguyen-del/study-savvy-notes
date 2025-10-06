@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { BookOpen, FolderPlus, Brain, Plus, Edit2, Check, X, Trash2, LayoutDashboard } from "lucide-react";
+import { BookOpen, FolderPlus, Brain, Plus, Edit2, Check, X, Trash2, LayoutDashboard, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 import { ViewType } from "./Dashboard";
+import { PricingModal } from "./PricingModal";
+import { useSubscription } from "@/contexts/SubscriptionContext";
 
 interface SidebarProps {
   currentView: ViewType;
@@ -21,6 +24,8 @@ export const Sidebar = ({ currentView, setCurrentView, selectedFolder, setSelect
   ]);
   const [editingFolder, setEditingFolder] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
+  const [pricingOpen, setPricingOpen] = useState(false);
+  const { isPremium } = useSubscription();
 
   const handleAddFolder = () => {
     const newFolder = {
@@ -75,9 +80,17 @@ export const Sidebar = ({ currentView, setCurrentView, selectedFolder, setSelect
     <div className="w-80 border-r border-border bg-muted/30 flex flex-col">
       {/* Header */}
       <div className="p-6 border-b border-border">
-        <h1 className="text-2xl font-bold text-academic-primary">
-          Study<span className="text-academic-accent">notes</span>
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-academic-primary">
+            Study<span className="text-academic-accent">notes</span>
+          </h1>
+          {isPremium && (
+            <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 border-0">
+              <Crown className="h-3 w-3 mr-1" />
+              Premium
+            </Badge>
+          )}
+        </div>
       </div>
 
       {/* Navigation */}
@@ -94,6 +107,19 @@ export const Sidebar = ({ currentView, setCurrentView, selectedFolder, setSelect
           </Button>
         ))}
       </div>
+
+      {/* Premium CTA */}
+      {!isPremium && (
+        <div className="px-4 pb-4">
+          <Button
+            onClick={() => setPricingOpen(true)}
+            className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white border-0"
+          >
+            <Crown className="mr-2 h-4 w-4" />
+            Upgrade to Premium
+          </Button>
+        </div>
+      )}
 
       {/* Folders */}
       <div className="flex-1 px-4">
@@ -187,6 +213,8 @@ export const Sidebar = ({ currentView, setCurrentView, selectedFolder, setSelect
           </div>
         </ScrollArea>
       </div>
+
+      <PricingModal open={pricingOpen} onOpenChange={setPricingOpen} />
     </div>
   );
 };
