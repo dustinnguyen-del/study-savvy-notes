@@ -11,6 +11,7 @@ interface Note {
   id: string;
   title: string;
   content: string;
+  folder: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -26,6 +27,7 @@ export const NoteEditor = ({ selectedFolder, onStatsUpdate }: NoteEditorProps) =
       id: "1",
       title: "Introduction to Calculus",
       content: "Calculus is the mathematical study of continuous change. It has two main branches: differential calculus and integral calculus.",
+      folder: "math",
       createdAt: "2024-01-15",
       updatedAt: "2024-01-15"
     },
@@ -33,8 +35,25 @@ export const NoteEditor = ({ selectedFolder, onStatsUpdate }: NoteEditorProps) =
       id: "2", 
       title: "Newton's Laws of Motion",
       content: "First Law: An object at rest stays at rest and an object in motion stays in motion unless acted upon by an unbalanced force.",
+      folder: "science",
       createdAt: "2024-01-14",
       updatedAt: "2024-01-16"
+    },
+    {
+      id: "3",
+      title: "World War II Timeline",
+      content: "World War II lasted from 1939 to 1945, involving most of the world's nations.",
+      folder: "history",
+      createdAt: "2024-01-10",
+      updatedAt: "2024-01-12"
+    },
+    {
+      id: "4",
+      title: "Study Tips",
+      content: "Remember to take breaks every 45 minutes and stay hydrated while studying.",
+      folder: "general",
+      createdAt: "2024-01-08",
+      updatedAt: "2024-01-09"
     }
   ]);
   
@@ -48,6 +67,7 @@ export const NoteEditor = ({ selectedFolder, onStatsUpdate }: NoteEditorProps) =
       id: Date.now().toString(),
       title: "Untitled Note",
       content: "",
+      folder: selectedFolder,
       createdAt: new Date().toISOString().split('T')[0],
       updatedAt: new Date().toISOString().split('T')[0]
     };
@@ -93,7 +113,9 @@ export const NoteEditor = ({ selectedFolder, onStatsUpdate }: NoteEditorProps) =
     onStatsUpdate?.({ noteCount: updatedNotes.length });
   };
 
-  const filteredNotes = notes.filter(note =>
+  const folderNotes = notes.filter(note => note.folder === selectedFolder);
+  
+  const filteredNotes = folderNotes.filter(note =>
     note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     note.content.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -110,9 +132,9 @@ export const NoteEditor = ({ selectedFolder, onStatsUpdate }: NoteEditorProps) =
         <div className="absolute inset-0 bg-gradient-to-r from-academic-primary/80 to-academic-accent/60 flex items-center">
           <div className="px-6 space-y-1">
             <h2 className="text-3xl font-bold text-white">
-              My Notes
+              {selectedFolder.charAt(0).toUpperCase() + selectedFolder.slice(1)} Notes
             </h2>
-            <p className="text-white/90">Organize your thoughts and learning materials</p>
+            <p className="text-white/90">{folderNotes.length} notes in this subject</p>
           </div>
         </div>
       </div>

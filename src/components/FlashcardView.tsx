@@ -11,6 +11,7 @@ interface Flashcard {
   id: string;
   question: string;
   answer: string;
+  folder: string;
   createdAt: string;
 }
 
@@ -25,13 +26,29 @@ export const FlashcardView = ({ selectedFolder, onStatsUpdate }: FlashcardViewPr
       id: "1",
       question: "What is the derivative of x²?",
       answer: "The derivative of x² is 2x",
+      folder: "math",
       createdAt: "2024-01-15"
     },
     {
       id: "2",
       question: "State Newton's First Law of Motion",
       answer: "An object at rest stays at rest and an object in motion stays in motion unless acted upon by an unbalanced force.",
+      folder: "science",
       createdAt: "2024-01-14"
+    },
+    {
+      id: "3",
+      question: "When did World War II end?",
+      answer: "World War II ended in 1945",
+      folder: "history",
+      createdAt: "2024-01-13"
+    },
+    {
+      id: "4",
+      question: "What is the best way to organize notes?",
+      answer: "Use categories, tags, and maintain consistent formatting",
+      folder: "general",
+      createdAt: "2024-01-12"
     }
   ]);
 
@@ -47,6 +64,7 @@ export const FlashcardView = ({ selectedFolder, onStatsUpdate }: FlashcardViewPr
       id: Date.now().toString(),
       question: "",
       answer: "",
+      folder: selectedFolder,
       createdAt: new Date().toISOString().split('T')[0]
     };
     
@@ -76,8 +94,10 @@ export const FlashcardView = ({ selectedFolder, onStatsUpdate }: FlashcardViewPr
     onStatsUpdate?.({ flashcardCount: updatedCards.length });
   };
 
+  const folderFlashcards = flashcards.filter(card => card.folder === selectedFolder);
+
   const handleStartStudy = () => {
-    if (flashcards.length > 0) {
+    if (folderFlashcards.length > 0) {
       setStudyMode(true);
       setCurrentCardIndex(0);
       setShowAnswer(false);
@@ -86,16 +106,16 @@ export const FlashcardView = ({ selectedFolder, onStatsUpdate }: FlashcardViewPr
 
   const handleNextCard = () => {
     setShowAnswer(false);
-    setCurrentCardIndex((prev) => (prev + 1) % flashcards.length);
+    setCurrentCardIndex((prev) => (prev + 1) % folderFlashcards.length);
   };
 
   const handlePrevCard = () => {
     setShowAnswer(false);
-    setCurrentCardIndex((prev) => (prev - 1 + flashcards.length) % flashcards.length);
+    setCurrentCardIndex((prev) => (prev - 1 + folderFlashcards.length) % folderFlashcards.length);
   };
 
-  if (studyMode && flashcards.length > 0) {
-    const currentCard = flashcards[currentCardIndex];
+  if (studyMode && folderFlashcards.length > 0) {
+    const currentCard = folderFlashcards[currentCardIndex];
     
     return (
       <div className="flex flex-col h-full bg-gradient-to-br from-academic-primary/5 to-academic-accent/5">
@@ -104,7 +124,7 @@ export const FlashcardView = ({ selectedFolder, onStatsUpdate }: FlashcardViewPr
             <h2 className="text-2xl font-bold text-academic-primary">Study Mode</h2>
             <div className="flex items-center gap-4">
               <span className="text-sm text-muted-foreground">
-                {currentCardIndex + 1} of {flashcards.length}
+                {currentCardIndex + 1} of {folderFlashcards.length}
               </span>
               <Button onClick={() => setStudyMode(false)} variant="outline">
                 Exit Study Mode
@@ -167,9 +187,9 @@ export const FlashcardView = ({ selectedFolder, onStatsUpdate }: FlashcardViewPr
         <div className="absolute inset-0 bg-gradient-to-r from-academic-primary/80 to-academic-accent/60 flex items-center">
           <div className="px-6 space-y-1">
             <h2 className="text-3xl font-bold text-white">
-              Flashcards
+              {selectedFolder.charAt(0).toUpperCase() + selectedFolder.slice(1)} Flashcards
             </h2>
-            <p className="text-white/90">Master concepts through active recall</p>
+            <p className="text-white/90">{folderFlashcards.length} flashcards in this subject</p>
           </div>
         </div>
       </div>
@@ -188,7 +208,7 @@ export const FlashcardView = ({ selectedFolder, onStatsUpdate }: FlashcardViewPr
               onClick={handleStartStudy} 
               size="sm" 
               variant="secondary"
-              disabled={flashcards.length === 0}
+              disabled={folderFlashcards.length === 0}
             >
               Study
             </Button>
@@ -197,7 +217,7 @@ export const FlashcardView = ({ selectedFolder, onStatsUpdate }: FlashcardViewPr
 
         <ScrollArea className="h-[calc(100vh-120px)]">
           <div className="p-2">
-            {flashcards.map((card) => (
+            {folderFlashcards.map((card) => (
               <Card key={card.id} className="mb-2 hover:bg-muted/50 transition-colors group">
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between">
