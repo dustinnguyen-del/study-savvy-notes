@@ -76,25 +76,37 @@ export const StudyQuestions = ({ selectedFolder, onStatsUpdate }: StudyQuestions
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
-  const [answeredQuestions, setAnsweredQuestions] = useState<Set<number>>(new Set());
+  const [answeredQuestions, setAnsweredQuestions] = useState<Map<number, number>>(new Map());
   const [showCreator, setShowCreator] = useState(false);
 
   const folderQuestions = questions.filter(q => q.folder === selectedFolder);
   const currentQuestion = folderQuestions[currentQuestionIndex];
   
+  // Check if current question was already answered and restore its state
+  useState(() => {
+    if (answeredQuestions.has(currentQuestionIndex)) {
+      const previousAnswer = answeredQuestions.get(currentQuestionIndex);
+      setSelectedAnswer(previousAnswer?.toString() || "");
+      setShowResult(true);
+    } else {
+      setSelectedAnswer("");
+      setShowResult(false);
+    }
+  });
+  
   const handleSubmitAnswer = () => {
-    if (!selectedAnswer) return;
+    if (!selectedAnswer || answeredQuestions.has(currentQuestionIndex)) return;
     
     const answerIndex = parseInt(selectedAnswer);
     const isCorrect = answerIndex === currentQuestion.correctAnswer;
     
     let newScore = score;
-    if (isCorrect && !answeredQuestions.has(currentQuestionIndex)) {
+    if (isCorrect) {
       newScore = score + 1;
       setScore(newScore);
     }
     
-    const newAnswered = new Set(answeredQuestions).add(currentQuestionIndex);
+    const newAnswered = new Map(answeredQuestions).set(currentQuestionIndex, answerIndex);
     setAnsweredQuestions(newAnswered);
     setShowResult(true);
     
@@ -106,17 +118,31 @@ export const StudyQuestions = ({ selectedFolder, onStatsUpdate }: StudyQuestions
 
   const handleNextQuestion = () => {
     if (currentQuestionIndex < folderQuestions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedAnswer("");
-      setShowResult(false);
+      const nextIndex = currentQuestionIndex + 1;
+      setCurrentQuestionIndex(nextIndex);
+      
+      if (answeredQuestions.has(nextIndex)) {
+        setSelectedAnswer(answeredQuestions.get(nextIndex)?.toString() || "");
+        setShowResult(true);
+      } else {
+        setSelectedAnswer("");
+        setShowResult(false);
+      }
     }
   };
 
   const handlePrevQuestion = () => {
     if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-      setSelectedAnswer("");
-      setShowResult(false);
+      const prevIndex = currentQuestionIndex - 1;
+      setCurrentQuestionIndex(prevIndex);
+      
+      if (answeredQuestions.has(prevIndex)) {
+        setSelectedAnswer(answeredQuestions.get(prevIndex)?.toString() || "");
+        setShowResult(true);
+      } else {
+        setSelectedAnswer("");
+        setShowResult(false);
+      }
     }
   };
 
