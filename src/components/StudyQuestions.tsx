@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Brain, RefreshCw, CheckCircle, XCircle, Lightbulb, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -83,7 +83,7 @@ export const StudyQuestions = ({ selectedFolder, onStatsUpdate }: StudyQuestions
   const currentQuestion = folderQuestions[currentQuestionIndex];
   
   // Check if current question was already answered and restore its state
-  useState(() => {
+  useEffect(() => {
     if (currentQuestion && answeredQuestions.has(currentQuestion.id)) {
       const previousAnswer = answeredQuestions.get(currentQuestion.id);
       setSelectedAnswer(previousAnswer?.toString() || "");
@@ -92,7 +92,7 @@ export const StudyQuestions = ({ selectedFolder, onStatsUpdate }: StudyQuestions
       setSelectedAnswer("");
       setShowResult(false);
     }
-  });
+  }, [currentQuestionIndex, currentQuestion?.id, answeredQuestions]);
   
   const handleSubmitAnswer = () => {
     if (!selectedAnswer || answeredQuestions.has(currentQuestion.id)) return;
