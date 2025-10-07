@@ -82,6 +82,13 @@ export const StudyQuestions = ({ selectedFolder, onStatsUpdate }: StudyQuestions
   const folderQuestions = questions.filter(q => q.folder === selectedFolder);
   const currentQuestion = folderQuestions[currentQuestionIndex];
   
+  // Reset to first question when folder changes
+  useEffect(() => {
+    setCurrentQuestionIndex(0);
+    setSelectedAnswer("");
+    setShowResult(false);
+  }, [selectedFolder]);
+  
   // Check if current question was already answered and restore its state
   useEffect(() => {
     if (currentQuestion && answeredQuestions.has(currentQuestion.id)) {
@@ -185,6 +192,11 @@ export const StudyQuestions = ({ selectedFolder, onStatsUpdate }: StudyQuestions
     hard: "text-destructive"
   };
 
+  // Early return if no current question to prevent undefined errors
+  if (!currentQuestion && folderQuestions.length > 0) {
+    return null;
+  }
+
   return (
     <div className="flex flex-col h-full">
       {/* Hero Banner */}
@@ -243,12 +255,14 @@ export const StudyQuestions = ({ selectedFolder, onStatsUpdate }: StudyQuestions
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">Question {currentQuestionIndex + 1}</CardTitle>
-                    <span className={`text-sm font-medium capitalize ${difficultyColor[currentQuestion.difficulty]}`}>
-                      {currentQuestion.difficulty}
-                    </span>
+                    {currentQuestion && (
+                      <span className={`text-sm font-medium capitalize ${difficultyColor[currentQuestion.difficulty]}`}>
+                        {currentQuestion.difficulty}
+                      </span>
+                    )}
                   </div>
                   <CardDescription className="text-base text-foreground">
-                    {currentQuestion.question}
+                    {currentQuestion?.question}
                   </CardDescription>
                 </CardHeader>
                 
@@ -259,12 +273,12 @@ export const StudyQuestions = ({ selectedFolder, onStatsUpdate }: StudyQuestions
                     disabled={showResult}
                     className="space-y-3"
                   >
-                    {currentQuestion.options.map((option, index) => (
+                    {currentQuestion?.options.map((option, index) => (
                       <div key={index} className="flex items-center space-x-2">
                         <RadioGroupItem 
                           value={index.toString()} 
                           id={`option-${index}`}
-                          className={showResult ? (
+                          className={showResult && currentQuestion ? (
                             index === currentQuestion.correctAnswer 
                               ? "border-success text-success" 
                               : index === parseInt(selectedAnswer) 
@@ -275,7 +289,7 @@ export const StudyQuestions = ({ selectedFolder, onStatsUpdate }: StudyQuestions
                         <Label 
                           htmlFor={`option-${index}`} 
                           className={`flex-1 cursor-pointer p-2 rounded ${
-                            showResult ? (
+                            showResult && currentQuestion ? (
                               index === currentQuestion.correctAnswer 
                                 ? "bg-success/10 text-success border border-success/20" 
                                 : index === parseInt(selectedAnswer) 
@@ -285,10 +299,10 @@ export const StudyQuestions = ({ selectedFolder, onStatsUpdate }: StudyQuestions
                           }`}
                         >
                           {option}
-                          {showResult && index === currentQuestion.correctAnswer && (
+                          {showResult && currentQuestion && index === currentQuestion.correctAnswer && (
                             <CheckCircle className="inline ml-2 h-4 w-4 text-success" />
                           )}
-                          {showResult && index === parseInt(selectedAnswer) && index !== currentQuestion.correctAnswer && (
+                          {showResult && currentQuestion && index === parseInt(selectedAnswer) && index !== currentQuestion.correctAnswer && (
                             <XCircle className="inline ml-2 h-4 w-4 text-destructive" />
                           )}
                         </Label>
@@ -296,7 +310,7 @@ export const StudyQuestions = ({ selectedFolder, onStatsUpdate }: StudyQuestions
                     ))}
                   </RadioGroup>
 
-                  {showResult && (
+                  {showResult && currentQuestion && (
                     <div className="mt-6 p-4 bg-academic-muted rounded-lg">
                       <div className="flex items-start gap-2">
                         <Lightbulb className="h-5 w-5 text-academic-primary mt-0.5" />
