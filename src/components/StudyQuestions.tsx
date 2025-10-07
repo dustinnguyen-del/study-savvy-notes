@@ -76,7 +76,7 @@ export const StudyQuestions = ({ selectedFolder, onStatsUpdate }: StudyQuestions
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
-  const [answeredQuestions, setAnsweredQuestions] = useState<Map<number, number>>(new Map());
+  const [answeredQuestions, setAnsweredQuestions] = useState<Map<string, number>>(new Map());
   const [showCreator, setShowCreator] = useState(false);
 
   const folderQuestions = questions.filter(q => q.folder === selectedFolder);
@@ -84,8 +84,8 @@ export const StudyQuestions = ({ selectedFolder, onStatsUpdate }: StudyQuestions
   
   // Check if current question was already answered and restore its state
   useState(() => {
-    if (answeredQuestions.has(currentQuestionIndex)) {
-      const previousAnswer = answeredQuestions.get(currentQuestionIndex);
+    if (currentQuestion && answeredQuestions.has(currentQuestion.id)) {
+      const previousAnswer = answeredQuestions.get(currentQuestion.id);
       setSelectedAnswer(previousAnswer?.toString() || "");
       setShowResult(true);
     } else {
@@ -95,7 +95,7 @@ export const StudyQuestions = ({ selectedFolder, onStatsUpdate }: StudyQuestions
   });
   
   const handleSubmitAnswer = () => {
-    if (!selectedAnswer || answeredQuestions.has(currentQuestionIndex)) return;
+    if (!selectedAnswer || answeredQuestions.has(currentQuestion.id)) return;
     
     const answerIndex = parseInt(selectedAnswer);
     const isCorrect = answerIndex === currentQuestion.correctAnswer;
@@ -106,7 +106,7 @@ export const StudyQuestions = ({ selectedFolder, onStatsUpdate }: StudyQuestions
       setScore(newScore);
     }
     
-    const newAnswered = new Map(answeredQuestions).set(currentQuestionIndex, answerIndex);
+    const newAnswered = new Map(answeredQuestions).set(currentQuestion.id, answerIndex);
     setAnsweredQuestions(newAnswered);
     setShowResult(true);
     
@@ -121,8 +121,9 @@ export const StudyQuestions = ({ selectedFolder, onStatsUpdate }: StudyQuestions
       const nextIndex = currentQuestionIndex + 1;
       setCurrentQuestionIndex(nextIndex);
       
-      if (answeredQuestions.has(nextIndex)) {
-        setSelectedAnswer(answeredQuestions.get(nextIndex)?.toString() || "");
+      const nextQuestion = folderQuestions[nextIndex];
+      if (nextQuestion && answeredQuestions.has(nextQuestion.id)) {
+        setSelectedAnswer(answeredQuestions.get(nextQuestion.id)?.toString() || "");
         setShowResult(true);
       } else {
         setSelectedAnswer("");
@@ -136,8 +137,9 @@ export const StudyQuestions = ({ selectedFolder, onStatsUpdate }: StudyQuestions
       const prevIndex = currentQuestionIndex - 1;
       setCurrentQuestionIndex(prevIndex);
       
-      if (answeredQuestions.has(prevIndex)) {
-        setSelectedAnswer(answeredQuestions.get(prevIndex)?.toString() || "");
+      const prevQuestion = folderQuestions[prevIndex];
+      if (prevQuestion && answeredQuestions.has(prevQuestion.id)) {
+        setSelectedAnswer(answeredQuestions.get(prevQuestion.id)?.toString() || "");
         setShowResult(true);
       } else {
         setSelectedAnswer("");
